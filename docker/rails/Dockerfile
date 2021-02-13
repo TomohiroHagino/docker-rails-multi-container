@@ -56,9 +56,6 @@ RUN bundle config --global retry 5 \
 RUN bundle install
 RUN yarn install
 
-COPY tmp/sockets /myapp/tmp/sockets
-COPY tmp/public /myapp/tmp/public
-
 # 文字コードの設定
 # 日本語を受け付けるように設定(rails consoleで日本語を使うなど) => LANG=C.UTF-8
 # 設定したロケールの値をC.UTF-8で上書きする => LC_ALL=C.UTF-8
@@ -73,6 +70,7 @@ ENV EDITOR vim
 # nginxでpuma.sockを配置するディレクトリを作成
 RUN mkdir -p tmp/sockets
 RUN mkdir -p tmp/public
+COPY tmp/ /myapp/tmp
 
 # タイムゾーン
 ENV TZ="Asia/Tokyo"
