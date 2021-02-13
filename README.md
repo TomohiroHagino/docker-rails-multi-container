@@ -2,43 +2,16 @@
 
 # サービスに関して
 
-- 名称：プロジェクト名
+```
+この通りに実装することで、ダルさを極限まで抑えつつRailsプロジェクトをDocker化できます。
 
+rails newで作ることもできるようにしました。
 
-# 自分用のメモ。
+コンテナオーケストレーション対応版。
+
+基本的にマルチにコンテナを使用したい場合はこちらを使う。
 
 ```
-nginxとpumaの連携をするために
-config/puma.rbの末尾に以下を足す必要があった。
-
-app_root = File.expand_path("../..", __FILE__)
-bind "unix://#{app_root}/tmp/sockets/puma.sock"
-
-そして、
-nginxコンテナとの連携のために
-
-tmp/sockets/puma.sockと言うファイルが必要になるが、これはホスト側で自分で作る必要がある。
-
-(ホスト側で)mkdir -p tmp/pids
-(ホスト側で)mkdir -p tmp/sockets
-
-を追加した。
-
-あと、config/database.ymlでdbの宛先をポート設定する必要がある。
-
-default: &default
-  adapter: postgresql
-  encoding: unicode
-  host: db
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: <%= ENV.fetch('DATABASE_USER') { 'postgres' } %>
-  password: <%= ENV.fetch('DATABASE_PASSWORD') { 'password' } %>
-  host: <%= ENV.fetch('DATABASE_URL') { 'db' } %>
-  port: <%= ENV.fetch('DATABASE_PORT') { 5432 } %>
-
-これでバインドできることを確認した。
-```
-
 
 # 環境構築
 
@@ -57,7 +30,7 @@ $ mv <クローンしたいRailsリポジトリ名>/* .
 $ cp Gemfile ./docker/rails/
 $ cp Gemfile.lock ./docker/rails/
 
-(Railsのバージョンは5、開発時はsqlite3、本番時はpostgresqlを使用するのを想定してます。)
+(Railsのバージョンは5もしくは6、データベースはpostgresql,mysql,sqlite3のどれかを使用するのを想定してます。)
 
 
 4. ここから環境構築。　初回時はこれ（imageがなければimageビルドから）コンテナの起動までを行う。
@@ -140,4 +113,46 @@ https://blog.rista.jp/entry/2017/12/27/135622
 # デバッグ
 ```
 pryいれてあります
+```
+
+# 新規作成するときの注意書き
+
+```
+nginxとpumaの連携をするために
+config/puma.rbの末尾に以下を足す必要があります。
+
+----------------------------------------------
+app_root = File.expand_path("../..", __FILE__)
+bind "unix://#{app_root}/tmp/sockets/puma.sock"
+
+ポートでのlistenは不要なのでコメントアウトする。
+#port  ENV.fetch("PORT") { 3000 }
+
+ポートでのlistenはコメントしておかないとsocketのlistenが行われず（pumaの仕様？）ハマった。
+https://qiita.com/himatani/items/b6c267dfb330a47fea9f
+----------------------------------------------
+
+そして、
+nginxコンテナとの連携のために
+`tmp/sockets/puma.sockと言うファイルが必要になるんですけども、
+これは自動でディレクトリ作成されないため
+ホスト側で自分で作る必要があります。
+
+(ホスト側で)mkdir -p tmp/pids
+(ホスト側で)mkdir -p tmp/sockets
+
+あと、postgresqlやmysqlを使用する場合、
+config/database.ymlでdbの宛先してあげる設定する必要があります。
+
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  host: db
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: <%= ENV.fetch('DATABASE_USER') { 'postgres' } %>
+  password: <%= ENV.fetch('DATABASE_PASSWORD') { 'password' } %>
+  host: <%= ENV.fetch('DATABASE_URL') { 'db' } %>
+  port: <%= ENV.fetch('DATABASE_PORT') { 5432 } %>
+
+これでバインドできます。
 ```
