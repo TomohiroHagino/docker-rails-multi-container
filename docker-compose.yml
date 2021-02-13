@@ -1,6 +1,6 @@
 version: '3'
 services:
-  app:
+  rails:
     build:
       context: ./docker/rails/
     volumes:

@@ -57,7 +57,7 @@ $ docker-compose up -d
 
 railsコンテナのターミナルに直接アクセス
 コンテナから抜ける時はCommand+P,Q
-$ docker-compose exec app ash
+$ docker-compose exec rails ash
 
 5. サーバーの立ち上げ
 $ bundle exec puma -C config/puma.rb
