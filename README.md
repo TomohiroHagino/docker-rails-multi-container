@@ -124,7 +124,6 @@ https://leanpub.com/everydayrailsrspec-jp/read
 コンテナ内でrubocopと入力すれば使えます。
 ```
 
-```
 # ESLint
 ```
 https://blog.rista.jp/entry/2017/12/27/135622
