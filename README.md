@@ -16,19 +16,25 @@ bind "unix://#{app_root}/tmp/sockets/puma.sock"
 
 そして、
 nginxコンテナとの連携のために
-dockerボリュームで
 
-tmp_volumeと、public_volumeというところにrailsのtmpディレクトリを同期。
-その影響で、tmp/pids/ とtmp/sockets/ が
-環境を変えた時に消えてしまう問題があった。
+tmp/sockets/puma.sockと言うファイルが必要になるが、これはホスト側で自分で作る必要がある。
 
-そしてその２つが消えてしまうと、pumaが動かなくなり、nginxとの同期もうまくいかなくなる。
-なので、rails用のentrypoint.shに
-
-mkdir -p tmp/pids
-mkdir -p tmp/sockets
+(ホスト側で)mkdir -p tmp/pids
+(ホスト側で)mkdir -p tmp/sockets
 
 を追加した。
+
+あと、config/database.ymlでdbの宛先をポート設定する必要がある。
+
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  host: db
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: <%= ENV.fetch('DATABASE_USER') { 'postgres' } %>
+  password: <%= ENV.fetch('DATABASE_PASSWORD') { 'password' } %>
+  host: <%= ENV.fetch('DATABASE_URL') { 'db' } %>
+  port: <%= ENV.fetch('DATABASE_PORT') { 5432 } %>
 
 これでバインドできることを確認した。
 ```
