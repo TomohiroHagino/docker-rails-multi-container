@@ -136,7 +136,7 @@ https://qiita.com/himatani/items/b6c267dfb330a47fea9f
 nginxコンテナとの連携のために
 `tmp/sockets/puma.sockと言うファイルが必要になるんですけども、
 これは自動でディレクトリ作成されないため
-ホスト側で自分で作る必要があります。
+ディレクトリをホスト側で自分で作る必要があります。
 
 (ホスト側で)mkdir -p tmp/pids
 (ホスト側で)mkdir -p tmp/sockets
@@ -154,5 +154,6 @@ default: &default
   host: <%= ENV.fetch('DATABASE_URL') { 'db' } %>
   port: <%= ENV.fetch('DATABASE_PORT') { 5432 } %>
 
+こんな感じで。
 これでバインドできます。
 ```
