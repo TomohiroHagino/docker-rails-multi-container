@@ -24,16 +24,16 @@ RUN apk update && \
         postgresql-client \
 #        mysql-client \
 #        mysql-dev \
-        sqlite-libs \
-        sqlite-dev \
+#        sqlite-libs \
+#        sqlite-dev \
         nodejs \
         nodejs-npm \
         tzdata \
         build-base \
         curl-dev \
         graphviz \
-        vim \
-        yarn
+        yarn \
+        vim
 
 RUN mkdir /myapp
 WORKDIR /myapp
