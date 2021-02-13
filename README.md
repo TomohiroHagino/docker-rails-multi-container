@@ -36,7 +36,8 @@ mkdir -p tmp/sockets
 # 環境構築
 
 ```
-0. まずはこのリポジトリをクローンする。
+0. まずはこのリポジトリをクローンして、.gitフォルダを削除する
+rm -rf .git
 
 1. docker desktopをインストールしたあと、Railsのリポジトリをクローンする。
 $ git clone <クローンしたいRailsリポジトリ>
