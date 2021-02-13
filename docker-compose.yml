@@ -51,7 +51,7 @@ services:
     ports:
       - 80:80
     depends_on:
-      - app
+      - rails
   minio:
     image: minio/minio:latest
     ports:
