@@ -45,8 +45,8 @@ $ mv <クローンしたいRailsリポジトリ名> .
 2. そして、/docker/railsディレクトリに入っているDockerfileの1行目にかかれたRubyのバージョンをお好みのものに変更する。
 
 3. そして、/docker/railsディレクトリに入っているGemfileをクローンしたプロジェクトのGemfileで上書きする。Gemfile.lockは空っぽにする。
-$ mv Gemfile ./docker/rails/
-$ mv ./docker/rails/Gemfile.lock .
+$ cp Gemfile ./docker/rails/
+$ cp Gemfile.lock ./docker/rails/
 
 (Railsのバージョンは5、開発時はsqlite3、本番時はpostgresqlを使用するのを想定してます。)
 
@@ -79,14 +79,18 @@ $ docker-compose logs -f
 railsコマンドを使用するときはvendor/bundle配下のrailsを使うようにします。
 （まずはコンテナにアクセス、そして以下コマンド）
 $ bundle exec rails ●●● ~
+```
 
-モデルでのテストコードを作っていく場合は下記のようにして
+# Rspec
+```
+モデルでのテストコードを作っていく場合は下記のように
 （まずはコンテナにアクセス、そして以下コマンド）
 $ rails g rspec:model model_name
 
 コントローラーでのテストコードを作っていく場合は下記のようにする。コントローラー名にsをつけるのを忘れずに。
 （まずはコンテナにアクセス、そして以下コマンド）
 $ rails g rspec:controller controllers_name
+```
 
 ```
 # Dockerの操作マニュアルはこちら
@@ -128,6 +132,4 @@ https://blog.rista.jp/entry/2017/12/27/135622
 # デバッグ
 ```
 pryいれてあります
-
-
 ```
