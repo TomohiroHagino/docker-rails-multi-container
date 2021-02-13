@@ -1,0 +1,69 @@
+version: '3'
+services:
+  app:
+    build:
+      context: ./docker/rails/
+    volumes:
+      - .:/myapp
+      - ./public:/myapp/public
+      - ./tmp:/myapp/tmp
+    ports:
+      - "3000:3000"
+    environment:
+      TZ: Asia/Tokyo
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
+    command: ["ash"]
+  db:
+    build:
+      context: ./docker/postgresql/
+    volumes:
+      - ./db/postgresql/volumes:/var/lib/postgresql
+    ports:
+      - 5432:5432
+    environment:
+      TZ: Asia/Tokyo
+      POSTGRES_PASSWORD: password
+# db:
+#    build:
+#      context: ./docker/mysql/
+#    command: >
+#      mysqld
+#      --default-authentication-plugin=mysql_native_password
+#      --character-set-server=utf8mb4
+#      --collation-server=utf8mb4_unicode_ci
+#    volumes:
+#      - ./db/mysql/volumes:/var/lib/mysql
+#    environment:
+#      MYSQL_USER: root
+#      MYSQL_ROOT_PASSWORD: password
+#    ports:
+#      - '3306:3306'
+  nginx:
+    build:
+      context: ./docker/nginx/
+    command: /usr/sbin/nginx -g 'daemon off;' -c /etc/nginx/nginx.conf
+    volumes:
+      - ./public:/myapp/public
+      - ./tmp:/myapp/tmp
+    ports:
+      - 80:80
+    depends_on:
+      - app
+  minio:
+    image: minio/minio:latest
+    ports:
+      - 9001:9001
+    volumes:
+      - minio:/data
+    command: server /data
+    environment:
+      MINIO_ACCESS_KEY: minio_access_key
+      MINIO_SECRET_KEY: minio_secret_key
+volumes:
+  # public_volume:
+  # tmp_volume:
+  minio:
+    driver: local
