@@ -17,32 +17,47 @@ rails newで作ることもできるようにしました。
 
 ```
 0. まずはこのリポジトリをクローンして、.gitフォルダを削除する
-rm -rf .git
+(mac,linuxの場合)
+$ rm -rf .git
+(windowsの場合)
+> del .git
 
 1. docker desktopをインストールしたあと、Railsのリポジトリをクローンする。
-$ git clone <クローンしたいRailsリポジトリ>
+(mac,linux)
 $ mv <クローンしたいRailsリポジトリ名>/* .
-(もし新規作成するなら、 rails new <プロジェクト名> --database=postgresql --skip-test)
+(windows)
+> move <クローンしたいRailsリポジトリ名>/* .
+
+(もし新規作成するなら、 rails new <プロジェクト名> --skip-test)
+(mac,linux)
 (mv <プロジェクト名>/* .)
+(windows)
+(move <プロジェクト名>/* .)
 
 2. そして、/docker/railsディレクトリに入っているDockerfileの1行目にかかれたRubyのバージョンをお好みのものに変更する。
 
 3. そして、/docker/railsディレクトリに入っているGemfileをクローンしたプロジェクトのGemfileで上書きする。Gemfile.lockは空っぽにする。
+(mac,linux)
 $ cp Gemfile ./docker/rails/
 $ cp Gemfile.lock ./docker/rails/
+(windowsの場合)
+> copy Gemfile ./docker/rails/
+> copy Gemfile.lock ./docker/rails/
 
 (Railsのバージョンは5もしくは6、データベースはpostgresql,mysql,sqlite3のどれかを使用するのを想定してます。)
 
 
-4. ここから環境構築。　初回時はこれ（imageがなければimageビルドから）コンテナの起動までを行う。
-$ docker-compose up -d
+4. ここから環境構築。初回時はこれ（imageがなければimageビルドから）コンテナの起動までを行う。
+(mac,linux,windows共通)
+docker-compose up -d
 
 railsコンテナのターミナルに直接アクセス
-コンテナから抜ける時はCommand+P,Q
-$ docker-compose exec rails ash
+(mac,linux,windows共通)
+docker-compose exec rails ash
 
 5. サーバーの立ち上げ
-$ bundle exec puma -C config/puma.rb
+(mac,linux,windows共通)
+bundle exec puma -C config/puma.rb
 (rails s -b 0.0.0.0で立ち上げると、nginxにbindされない。)
 
 6. DB関連 コンテナに直接アクセスして以下のコマンドをやればOK(bundle execつけなくてもいい)
@@ -51,17 +66,21 @@ $ bundle exec puma -C config/puma.rb
 #(コンテナ内で) rails db:migrate
 
 作業を終了する時はコンテナを終了させます。
-$ docker-compose stop
+(mac,linux,windows共通)
+docker-compose stop
 
 2回目以降からは以前に作ったコンテナを起動させます。
-$ docker-compose start
+(mac,linux,windows共通)
+docker-compose start
 
 2回目以降start起動するとデタッチドモードになってログを確認できません。見たいときはこれ。-fを外せばtailしない。
-$ docker-compose logs -f
+(mac,linux,windows共通)
+docker-compose logs -f
 
 railsコマンドを使用するときはvendor/bundle配下のrailsを使うようにします。
 （まずはコンテナにアクセス、そして以下コマンド）
-$ bundle exec rails ●●● ~
+(mac,linux,windows共通)
+bundle exec rails ●●● ~
 ```
 
 # Rspec
